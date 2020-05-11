@@ -15,12 +15,13 @@ class MyDict(dict):
         self[key] = value
         return key
     
-    def get(self,key):
+    '''def get(self,key):
         retval = serialize(self[key])
-        return retval
+        return retval'''
 
     def delete(self,key):
         del self[key]
+        return "deleted"
         
 
 class UDPServer():

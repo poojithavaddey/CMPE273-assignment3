@@ -6,7 +6,7 @@ from lru_cache import lru_cache
 from sample_data import USERS
 from server_config import NODES
 from pickle_hash import serialize_GET, serialize_PUT, serialize_DELETE
-from node_ring import NodeRing
+from client_ring import NodeRing
 from bloom_filter import BloomFilter
 
 BUFFER_SIZE = 1024
@@ -32,29 +32,13 @@ class UDPClient():
             print("Error! {}".format(socket.error))
             exit()
 
-'''def lru_cache(cap):
-    l = cap
-    cache = collections.OrderedDict()
-    def inner_func(func):
-        def inner(*args):
-            key = args[0]
-            if cache.get(key):
-                cache.move_to_end(key,last=True)
-                return cache[key]
-            else:
-                val = get_response(key)
-                cache[key]= value                        
-        return inner
-    return inner_func'''
-
-
 def process(udp_clients):
     client_ring = NodeRing(udp_clients)
     hash_codes = set()
     # PUT all users.  
 
     @lru_cache(5)
-    def get(key):
+    def get(key,data_bytes):
         if bloomfilter.is_member(key):
             response = client_ring.get_node(key).send(data_bytes)
             return response
@@ -80,7 +64,7 @@ def process(udp_clients):
     for hc in hash_codes:
         print(hc)
         data_bytes, key = serialize_GET(hc)
-        get(key)
+        get(key,data_bytes)
     
     #DELETE the user
     for hc in hash_codes:

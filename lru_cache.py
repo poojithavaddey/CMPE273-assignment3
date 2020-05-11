@@ -10,7 +10,7 @@ def lru_cache(cap):
                 cache.move_to_end(key,last=True)
                 return cache[key]
             else:
-                res = func(key)
+                res = func(key,args[1])
                 cache[key]= res 
                 return cache[key]                      
         return inner
